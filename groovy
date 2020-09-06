@@ -33,7 +33,7 @@ sudo docker push 03012001/httpdweb:v1
 
 job("task6-job2") {
   description("This will run on slave nodes and control K8S.")
-  restrictToLabel('ssh-kube')
+  Restrict where this project can be run('ssh-kube')
   
   triggers {
     authenticationToken('1234')
