@@ -44,7 +44,7 @@ echo "Deployment exists"
 kubectl rollout restart deploy myweb-deploy
 kubectl rollout status deploy myweb-deploy
 else
-kubectl create -f /root/deploy.yml
+kubectl create -f /root/kube/deploy.yml
 kubectl scale deployment myweb-deploy --replicas=3
 kubectl expose deployment myweb-deploy --port 80 --type=NodePort
 fi
@@ -71,25 +71,7 @@ echo "sending back to developer"
 exit 1
 fi''')
   }
-  publishers {
-    extendedEmail {
-      contentType('text/html')
-      triggers {
-        success{
-          attachBuildLog(true)
-          subject('Build successfull')
-          content('The build was successful and deployment was done.')
-          recipientList('saipavanbm@gmail.com')
-        }
-        failure{
-          attachBuildLog(true)
-          subject('Failed build')
-          content('The build was failed')
-          recipientList('saipavanbm@gmail.com')
-        }
-      }
-    }
-  }
+ 
 }
 
 
