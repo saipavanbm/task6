@@ -15,17 +15,18 @@ job("task6-job1") {
   wrappers {
     preBuildCleanup()
   }
+   command = """
+sudo rm -rf /task4
+sudo mkdir /task4
+sudo cp -rf * /task4
+sudo docker build -t httpdweb:v1 /task4
+sudo docker tag httpdweb:v1 03012001/httpdweb:v1
+sudo docker push 03012001/httpdweb:v1
+
+"""
   
-  steps {
-    dockerBuildAndPublish {
-      repositoryName('03012001/httpd-server')
-      tag("latest")
-      dockerHostURI('tcp://0.0.0.0:4243')
-      registryCredentials('docker-hub')
-      createFingerprints(false)
-      skipDecorate(false)
-      skipTagAsLatest(true)
-    }
+ steps {
+    shell(command)
   }
   
 }
@@ -46,7 +47,7 @@ then
 		sudo kubectl rollout restart deployment/webserver
 		sudo kubectl rollout status deployment/webserver
   else
-		sudo kubectl create deployment webserver --image=03012001/httpd-server:latest
+		sudo kubectl create deployment webserver --image=03012001/httpdweb:v1
 		sudo kubectl scale deployment webserver --replicas=3
 		sudo kubectl expose deployment webserver --port 80 --type NodePort
 	fi
