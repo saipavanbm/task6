@@ -38,19 +38,15 @@ job("task6-job2") {
   }
   
   command = """
-export len1=\$(ls -l /var/lib/jenkins/workspace/task6-job1 | grep html | wc -l)
-if [ \$len1 -gt 0 ]
+if kubectl get pods | grep myweb-deploy
 then
-	export len2=\$(sudo kubectl get deployments | grep webserver | wc -l)
-	if [ \$len2 -gt 0 ]
-	then
-		sudo kubectl rollout restart deployment/webserver
-		sudo kubectl rollout status deployment/webserver
-  else
-		sudo kubectl create deployment webserver --image=03012001/httpdweb:v1
-		sudo kubectl scale deployment webserver --replicas=3
-		sudo kubectl expose deployment webserver --port 80 --type NodePort
-	fi
+echo "Deployment exists"
+kubectl rollout restart deploy myweb-deploy
+kubectl rollout status deploy myweb-deploy
+else
+kubectl create -f /root/deploy.yml
+kubectl scale deployment myweb-deploy --replicas=3
+kubectl expose deployment myweb-deploy --port 80 --type=NodePort
 fi
 """
   
