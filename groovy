@@ -33,7 +33,10 @@ sudo docker push 03012001/httpdweb:v1
 
 job("task6-job2") {
   description("This will run on slave nodes and control K8S.")
+  restrictToLabel(String ssh-kube)
+  
   triggers {
+    authenticationToken('1234')
     upstream('task6-job1', 'SUCCESS')
   }
   
@@ -63,7 +66,7 @@ job("task6-job3") {
     upstream('task6-job2', 'SUCCESS')
   }
   steps {
-    shell('''if sudo kubectl get deployments webserver
+    shell('''if sudo kubectl get deployments myweb-deploy
 then
 echo "send to production"
 else
